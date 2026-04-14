@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        model: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
         max_tokens: 2048,
         messages,
       }),
