@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
+        model: "Qwen/Qwen2.5-Coder-32B-Instruct",
         max_tokens: 2048,
         messages,
       }),
