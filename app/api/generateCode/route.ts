@@ -8,7 +8,9 @@ Rules you must follow without exception:
 - Return ONLY the React component code, starting with import statements
 - Use a default export
 - Use TypeScript
-- Use Tailwind CSS for all styling
+- Use Tailwind CSS for all styling — ALL styling must be inline via className attribute
+- Do NOT import any CSS files or stylesheets
+- Do NOT create separate CSS classes or modules
 - Do NOT use arbitrary Tailwind values (e.g. h-[600px])
 - Use a warm, friendly color palette for non-technical users
 - Make the app interactive using React state — import hooks from React
