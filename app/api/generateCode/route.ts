@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
         max_tokens: 2048,
         messages,
       }),
