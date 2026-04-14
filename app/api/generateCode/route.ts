@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+        model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
         max_tokens: 2048,
         messages,
       }),
