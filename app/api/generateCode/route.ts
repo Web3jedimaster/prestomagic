@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        model: "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
         max_tokens: 2048,
         messages,
       }),
