@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
 const SYSTEM_PROMPT = `You are an expert frontend React engineer building complete, production-ready apps for PrestoMagic.
 
@@ -36,6 +37,15 @@ Remember: Your code will run immediately in Sandpack. It MUST be complete and er
 
 export async function POST(request: NextRequest) {
   try {
+    // Protect the API route - only authenticated users can call it
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - please sign in" },
+        { status: 401 }
+      );
+    }
+
     const { prompt } = await request.json();
 
     if (!prompt || typeof prompt !== "string") {
