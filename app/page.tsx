@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Sandpack } from "@codesandbox/sandpack-react";
+import { useAuth, useUser, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 interface AppHistory {
   id: string;
@@ -22,6 +24,9 @@ const TEMPLATES = [
 ];
 
 export default function Home() {
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
+
   const [prompt, setPrompt] = useState("");
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [currentPrompt, setCurrentPrompt] = useState("");
@@ -186,6 +191,43 @@ export default function Home() {
     }
   };
 
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen bg-purple-light flex flex-col">
+        <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
+          <div className="w-full max-w-md">
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="flex items-center justify-center gap-3 mb-8">
+                <span className="text-4xl text-amber-brand animate-pulse">✦</span>
+                <h1 className="text-4xl font-bold text-purple-brand">PrestoMagic</h1>
+              </div>
+              <p className="text-center text-ink text-lg mb-8">
+                No code. Just a little magic.
+              </p>
+              <div className="space-y-4">
+                <Link
+                  href="/sign-in"
+                  className="w-full block px-6 py-4 bg-purple-brand text-white font-semibold rounded-xl hover:opacity-90 transition text-center"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="w-full block px-6 py-4 bg-amber-brand text-white font-semibold rounded-xl hover:opacity-90 transition text-center"
+                >
+                  Create Account
+                </Link>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer className="py-6 px-4 sm:px-8 text-center text-ink text-sm">
+          Powered by Llama 3.3 70B + Together AI · Workflows by AINL
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-purple-light flex flex-col">
       <main className="flex-1 flex items-start justify-center p-4 sm:p-8">
@@ -199,12 +241,18 @@ export default function Home() {
                   PrestoMagic
                 </h1>
               </div>
-              <button
-                onClick={() => setShowHistory(!showHistory)}
-                className="px-4 py-2 bg-purple-brand text-white rounded-xl text-sm hover:opacity-90 transition"
-              >
-                {showHistory ? "Hide" : "History"}
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="px-4 py-2 bg-purple-brand text-white rounded-xl text-sm hover:opacity-90 transition"
+                >
+                  {showHistory ? "Hide" : "History"}
+                </button>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-ink">Hi, {user?.firstName}!</span>
+                  <UserButton />
+                </div>
+              </div>
             </div>
 
             <p className="text-center text-ink text-lg mb-8">
