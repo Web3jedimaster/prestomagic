@@ -36,23 +36,31 @@ export default function Home() {
   const [editedCode, setEditedCode] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState<"react" | "vue" | "vanilla">("react");
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<unknown>(null);
 
   // Initialize speech recognition
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.onstart = () => setIsListening(true);
-        recognitionRef.current.onend = () => setIsListening(false);
-        recognitionRef.current.onresult = (event: any) => {
-          const transcript = Array.from(event.results)
-            .map((result: any) => result[0].transcript)
-            .join("");
-          setPrompt(transcript);
-        };
-      }
+    if (typeof window === "undefined") return;
+
+    const SpeechRecognitionAPI = (window as unknown as Record<string, unknown>).SpeechRecognition || (window as unknown as Record<string, unknown>).webkitSpeechRecognition;
+    if (!SpeechRecognitionAPI) return;
+
+    try {
+      const recognition = new (SpeechRecognitionAPI as { new(): unknown })();
+      const rec = recognition as Record<string, unknown>;
+      rec.onstart = () => setIsListening(true);
+      rec.onend = () => setIsListening(false);
+      rec.onresult = (event: Record<string, unknown>) => {
+        const results = event.results as Record<number, Record<number, { transcript: string }>>;
+        const transcripts: string[] = [];
+        for (let i = 0; i < Object.keys(results).length; i++) {
+          transcripts.push(results[i][0].transcript);
+        }
+        setPrompt(transcripts.join(""));
+      };
+      recognitionRef.current = recognition;
+    } catch (err) {
+      console.error("Speech recognition not supported:", err);
     }
   }, []);
 
@@ -166,10 +174,15 @@ export default function Home() {
 
   const handleVoiceInput = () => {
     if (!recognitionRef.current) return;
-    if (isListening) {
-      recognitionRef.current.stop();
-    } else {
-      recognitionRef.current.start();
+    try {
+      const rec = recognitionRef.current as Record<string, unknown>;
+      if (isListening) {
+        (rec.stop as () => void)();
+      } else {
+        (rec.start as () => void)();
+      }
+    } catch (err) {
+      console.error("Speech recognition error:", err);
     }
   };
 
@@ -247,7 +260,7 @@ export default function Home() {
               {/* Language Selection */}
               <select
                 value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value as any)}
+                onChange={(e) => setSelectedLanguage(e.target.value as "react" | "vue" | "vanilla")}
                 className="w-full px-4 py-2 border-2 border-purple-brand rounded-xl text-ink focus:outline-none focus:ring-2 focus:ring-amber-brand"
               >
                 <option value="react">React + TypeScript</option>
